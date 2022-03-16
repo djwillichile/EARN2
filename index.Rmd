@@ -1,0 +1,225 @@
+---
+title: "Clasificación de zonas homogeneas"
+author: "Guillermo S. Fuentes Jaque"
+date: "August 20, 2021"
+output:
+  html_document:
+    highlight: haddock
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+---
+
+<style>
+  body {text-align: justify;font-family: sans-serif;}
+  #header {text-align: center;}
+</style>
+
+<br>
+
+
+# Clasificación como principio humano
+
+Del mismo modo que buscamos separar los animales de las plantas en función de sus características e inclusive, el acto de diferenciar y clasificar a los animales según su genero o especie, la clasificación de zonas homogeneas responde a una característica básicas del ser humano, la de querer encasillar cada cosa dentro de alguna categoría.
+
+Un ejemplo de esto es la clasificación por geometría que se define para objetos espaciales, en geomática es posible distinguir 3 tipos de geometrías del modelo vectorial para el análisis espacial, estos corresponden a **puntos**, **líneas** y **polígonos**, los cuales hacen referencia a elementos con características particulares y su respectiva representación en el espacio, los polígonos representan elementos bidimensionales superficies, las líneas representan elementos unidimensionales como calles o ríos, mientras que los puntos representarón la posición de algún objeto en el espacio, como, un individuo, el centro de una ciudad e incluso la presencia de algún evento.
+
+![Figura 1: Clasificación de elementos espaciales según su geometría. ](IMG/Primitivas_vectoriales.png){width='100%'}
+
+
+Desde la antigüedad que el ser humano pretende diferenciar un lugar de otro, tal vez en función de las lenguas que se hablan, de los animales que la habitan, de su cobertura vegetacional, sus caracteristicas fisiográficas o sus variables climáticas. En este sentido, no han faltado quienes han pretendido desarrollar atlas de caracterización climática o vegetacional distingiendo zonas bien delimitadas seguen las variables involucradas en dichos procesos.
+
+# El análisis de conglomerados
+
+Bajo esta misma lógica viene a colación el hablar del **análisis de conglomerados**,  **análisis de cluster** o **clustering**, el cual se trata de un método no paramétrico de cartacter exploratorio o descriptico, que detecta patrones de agrupación entre observaciones de acuerdo con sus similitudes y/o diferencias, buscando clasificar cualquier tipo de objetos según sus características.
+
+Los objetos a clasificar deben tener por lo menos características cualitativas o cuantitativas, las cuales permitirán su clasificación, la cual debe lograr maximizar la diferencia entre grupos y minimiza la diferencia intergrupo, es decir, una máxima homogeneidad o similitud entre los objetos agrupados y una gran diferencia entre los grupos, teniendo en cuanta siempre que este método no permite hacer inferencia estadística de una población con respecto a una muestra.
+
+Para llevar a cabo este procedimiento se deben seguir una serie de pasos consecutivos que permitan su correcto desarrollo. El primer paso consiste en consolidar una matriz o marco de datos de los objetos a clasificar con una cantidad y calidad adecuada de variables.Posterior a esto, es necesario construir una matriz de distancia o medidas de similitud con la cual comparar los disitntos registros de la base de datos para luego elegir un método adecuado de conglomeración y finalmente, validar el proceso de conglomerado
+
+## Construcción de marco de datos
+Cómo se comentó anteriormente la construcción del marco de datos es promordial para la realización del análisis de conglometados. Se requiere una base de datos que cuente con una estructura biend efinida, en la que las dstintas variables están dispuestas en columnas y los registros en filas, así mismo, para que el análisis se realice de una manera mucho más eficiente, es que se aconseja que la base de datos no posea más de 8 variables.
+
+https://djwillichile.github.io/EARN2/DATA/PPM_stat.csv
+
+### Importación de datos puntuales
+Existe un gran número de formatos en que se puede importar datos, un ejemplo de estos es el ya conocido **csv** (*Comma Separated Values*), o el versátil **xlsx** de Excel, a continuación se importarón datos desde los formatos csv. Para estos ejemplos utilizaremos los materiales encontrados en el repositorio <https://github.com/djwillichile/EARN2/tree/main/DATA>, también pueden acceder a todo el material utilizado para esta actividad mediante el siguiente **[enlace](https://djwillichile.github.io/EARN2/DATA/PPM_stat.csv)**.
+
+### Importar datos desde csv
+Este método es uno de los más sencillos de implementar y a la vez, el que permite más formas distintas de realizarlo. utilizaremos el archivo *PPM_stat.csv*
+
+```{r, include = T,eval=T}
+# Asignamos al objeto "path" la ruta del archivo que utilizaremos
+path <- "DATA"
+
+# Asignamos al objeto "file" el nombre del archivo que utilizaremos
+file <- "PPM_stat.csv"
+
+#ruta completa del archivo
+fileStrig <- paste0(path,"/",file)
+fileStrig
+
+# Leemos el archivo mediante la función "read.csv"
+Prec <- read.csv(file = fileStrig)
+
+# Es posible observar una porcion de los datos cargados
+head(Prec)
+
+```
+
+
+
+Cabe destacar que es posible leer estos datos utilizando también la función `read.table()` o `read.delim()`
+
+```{r}
+# Leemos el archivo mediante la función "read.table"
+Prec <- read.table(file = fileStrig,sep = ",",dec = ".",header = T)
+head(Prec)
+
+# Leemos el archivo mediante la función "read.delim"
+Prec <- read.delim(file = fileStrig,sep = ",",dec = ".",header = T)
+head(Prec)
+```
+
+
+### textos delimitados por tabilación (*txt*)
+Así como importamos la base de datos a partir de un *csv* que contenía la información, también es posible utilizar distintas extensiones de archivos, como por ejemplo los textos delimitados por tabulación (*txt*), el texto delimitado por tabulación no necesita de paquetes externos al de *r base* para su importación.
+
+
+```{r}
+# Asignamos al objeto "fileStrig" ruta completa del archivo
+fileStrig <- "DATA/PPM_stat.txt"
+
+# Leemos el archivo mediante la función "read.table"
+Prec <- read.table(file = fileStrig,sep = "\t",dec = ".",header = T)
+head(Prec)
+
+# Leemos el archivo mediante la función "read.delim"
+Prec <- read.delim(file = fileStrig,sep = "\t",dec = ".",header = T)
+head(Prec)
+```
+
+
+
+## Obtención de matriz de distancia
+Para la obtención de matriz de distancia existe un gran número de metricas utilizadas con fruencia, entre los ejemplo de dichas métricas se puede encontrar el **índice de semejanza de Jaccard**, el **índice de similitud de Bray-Curtis**, así como la **Distancia euclídea**, entre muchos otros, los cuales pueden ser utilizados mediante la función `vegdist()` del paquete `vegan`. Cabe destacar que la elección del índice se debería realizar previa consulta de literatura científica, buscando consensos o recomendaciones en el uso de estos.
+
+
+## Método de agrupación
+Existen diversos métodos de agrupación o clusterin, los cuales se pueden clasificar en 2. Por un lado se cuenta con el métodos de partición, el cual no es muy utilizado en la ecología de comunidades, sin embargo, permite al usuario definir la cantidad de grupos a utilizar.Por otra parte, existen los métodos jerárquicos, en el que los grupos se van clasificando de acuerdo con las características de los objetos. Dentro de estos métodos están los procesos Aglomerativos y los Disociativos, que a su vez tiene varias formas de llevarse a cabo.
+
+En el **método jerárquico aglomerativo** cada observación inicia como un grupo, luego se calcula la similitud entre todos los grupos y los más similares se unen en un solo grupo de manera iterativa, hasta obtener grupos anidados dentro de otros grupos de mayor tamaño. En cambio, el **método disociativo o divisivo**, comienza con todos los objetos formando parte de un mismo grupo y el algoritmo los divide de acuerdo a sus diferencias.
+
+Cabe destacar que el más utilizado es el método aglomerativo, sin embargo, depende de cómo se desee clasificar a los grupos, si se busca optar por grupos con máximas diferencias entre ellos, se debe utilizar el método disociativo, en cambio si se busca que los objetos dentro de un grupo sean estrictamente similares se debe usar el método aglomerativo.
+
+
+
+
+
+
+<!-- ### libro de Microsoft Excel (*xlsx*) -->
+<!-- ```{r} -->
+<!-- # cargamos paquete para soportar el formato -->
+<!-- library(openxlsx) -->
+
+<!-- # Asignamos al objeto "fileStrig" ruta completa del archivo -->
+<!-- fileStrig <- "DATA/bradypus.xlsx" -->
+
+<!-- # Leemos el archivo temporal mediante la función "read_excel" -->
+<!-- bradypus <- read.xlsx(fileStrig,1) -->
+<!-- head(bradypus) -->
+<!-- ``` -->
+
+<!-- <br> -->
+<!--   Es posible apreciar que el objeto `bradypus` es un data.frame común y que no constituye un objeto de tipo espacial -->
+<!-- ```{r} -->
+<!-- class(bradypus) -->
+<!-- ``` -->
+<!-- <br> -->
+<!--   Es importante precisar que los datos puntuales requieren contar con al menos 2 variables correspondientes a las coordenadas geográficas verticales (*latitud*) y horizontales (*longitud*), a las que adicionalmente se les puede incluir una tercera variable correspondiente a la coordenada ortogonal de altura (*altitud*). Para este ejemplo es posible apreciar que contamos con la variable horizontal y vertical de coordenadas, *lon* y *lat* respectivamente. -->
+
+<!-- ```{r,echo = F} -->
+<!-- library(knitr) -->
+<!-- kable(head(bradypus), align ="c") -->
+
+<!-- ``` -->
+<!-- ## Crear capas espaciales de puntos -->
+<!--   Para crear objetos espaciales a partir de matrices o data.frames con coordenadas espaciales es posible utilizar las funciones `SpatialPoints()`,`SpatialPointsDataFrame()` o `coordinates()`. Es preciso mencionar que para utilizar dichas funciones es necesario llamar al paquete `sp` el cual se carga automáticamente al llamar a los paquetes `raster` y/o `rgdal`. También es necesario que las coordenadas espaciales se encuentren registradas en un único sistema de referencia con su respectivo DATUM y tener muy claro a cual corresponde para evitar problemas al momento de georreferenciar las coordenadas. -->
+
+
+<!-- ```{r, fig.align='center'} -->
+<!-- # Cargamos paquetes espaciales -->
+<!-- library(raster) -->
+<!-- library(rgdal) -->
+<!-- library(maptools) -->
+
+<!-- # importamos una capa espacial del mundo para contextualizar -->
+<!-- data(wrld_simpl) -->
+<!-- par(mar = c(2, 2, 0.1, 0.1)) -->
+
+<!-- # Creamos el objeto espacial "bradypus.sp" donde proj4string corresponde al sistema de referencia -->
+<!-- bradypus.sp <- SpatialPoints(bradypus[c("lon","lat")], proj4string=crs("+init=epsg:4326")) -->
+<!-- bradypus.sp -->
+
+<!-- # graficamos el objeto espacial, cosa que no era posible hacer con el data.frame -->
+<!-- plot(bradypus.sp,axes=T,col="blue") -->
+
+<!-- # añadimos a la gráfica la capa espacial del mundo -->
+<!-- plot(wrld_simpl,add=T) -->
+
+<!-- # realizamos el mismo procedimiento con la función "SpatialPointsDataFrame" -->
+<!-- bradypus.sp2 <- SpatialPointsDataFrame(bradypus[c("lon","lat")], data = bradypus["species"], proj4string=crs("+init=epsg:4326")) -->
+<!-- bradypus.sp2 -->
+
+<!-- # graficamos -->
+<!-- plot(bradypus.sp2,axes=T,col="red") -->
+<!-- plot(wrld_simpl,add=T) -->
+
+<!-- # ahora realizamos el mismo procedimiento con la función "coordinates" -->
+<!-- bradypus.sp3 <- bradypus -->
+<!-- coordinates(bradypus.sp3) <- ~lon+lat -->
+<!-- crs(bradypus.sp3)=crs("+init=epsg:4326") -->
+<!-- bradypus.sp3 -->
+
+<!-- # graficamos -->
+<!-- plot(bradypus.sp3,axes=T,col="forestgreen") -->
+<!-- plot(wrld_simpl,add=T) -->
+<!-- ``` -->
+<!-- <br> -->
+<!--   Cómo habrán podido notar, los 3 métodos permiten obtener resultados muy parecidos utilizando a su vez una sintaxis simple que no requiere mayor análisis, es decir, se requiere la base de datos con coordenadas y el sistema de referencia, la principal diferencia radica en que la función `SpatialPoints()` devuelve solo las coordenadas espaciales georreferenciadas mientras que las otras 2 georeferencian todo el contenido de la base de datos. -->
+
+<!-- ## Importar capas vectoriales -->
+<!-- Ya aprendimos como importar información y crear capas vectoriales a partir de bases de datos puntuales, pero en el mundo del análisis espacial se manejan distintos formatos y archivos con los que van a toparse de vez en cuando, algunos de estos formatos con los ya mencionados *shp* y *kml*, por suerte existen paquetes para importar y manipular dichos archivos, una de las funciones más utilizadas para cargar estos archivos `readOGR()` del paquete `rgdal` -->
+
+<!-- ```{r , include=FALSE} -->
+<!-- dev.off(dev.list()) -->
+<!-- ``` -->
+
+<!-- ```{r, fig.align='center'} -->
+<!-- # Asignamos al objeto "fileStrig" ruta completa del archivo kml -->
+<!-- fileStrig <- "DATA/bradypus.kml" -->
+
+<!-- # importamos la capa mediante la función "readOGR" -->
+<!-- bradypus <- readOGR(fileStrig,layer = "bradypus") -->
+<!-- bradypus -->
+
+<!-- # graficamos -->
+<!-- par(mar = c(2, 2, 0.1, 0.1)) -->
+<!-- plot(bradypus.sp2,axes=T,col="blue") -->
+<!-- plot(wrld_simpl,add=T) -->
+
+<!-- # Asignamos al objeto "fileStrig" ruta completa del archivo shp -->
+<!-- fileStrig <- "https://djwillichile.github.io/MODULO_06/DATA/bradypus.shp" -->
+
+<!-- # importamos la capa mediante la función "readOGR" -->
+<!-- bradypus <- readOGR("DATA/bradypus.shp",encoding = "ESRI Shapefile") -->
+<!-- bradypus -->
+
+<!-- # graficamos -->
+<!-- par(mar = c(2, 2, 0.1, 0.1)) -->
+<!-- plot(bradypus.sp2,axes=T,col="red") -->
+<!-- plot(wrld_simpl,add=T) -->
+<!-- ``` -->
+<!-- <br> -->
+<!-- Como ya habrán visto, la importación de estos datos espaciales sigue el mismo patrón, la función `readOGR()` requiere el nombre del archivo y algunas veces la codificación de este para que no se desconfigure la base de datos no espacial asociada al archivo, de todos modos podrán revisar el detalle de esta función incorporando un sigo de interrogación antes de la función (`?readOGR()`) u ocupando la función help (`help("readOGR")`) -->
