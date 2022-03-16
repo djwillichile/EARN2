@@ -23,28 +23,26 @@ output:
 
 Del mismo modo que buscamos separar los animales de las plantas en función de sus características e inclusive, el acto de diferenciar y clasificar a los animales según su genero o especie, la clasificación de zonas homogeneas responde a una característica básicas del ser humano, la de querer encasillar cada cosa dentro de alguna categoría.
 
-Un ejemplo de esto es la clasificación por geometría que se define para objetos espaciales, en geomática es posible distinguir 3 tipos de geometrías del modelo vectorial para el análisis espacial, estos corresponden a **puntos**, **líneas** y **polígonos**, los cuales hacen referencia a elementos con características particulares y su respectiva representación en el espacio, los polígonos representan elementos bidimensionales superficies, las líneas representan elementos unidimensionales como calles o ríos, mientras que los puntos representarón la posición de algún objeto en el espacio, como, un individuo, el centro de una ciudad e incluso la presencia de algún evento.
+Un ejemplo de esto es la clasificación por geometría que se define para objetos espaciales. en geomática es posible distinguir 3 tipos de geometrías del modelo vectorial para el análisis espacial, estos corresponden a **puntos**, **líneas** y **polígonos**, los cuales hacen referencia a elementos con características particulares y su respectiva representación en el espacio, los polígonos representan elementos bidimensionales superficies, las líneas representan elementos unidimensionales como calles o ríos, mientras que los puntos representarán la posición de algún objeto en el espacio, como, un individuo, el centro de una ciudad e incluso la presencia de algún evento.
 
 ![Figura 1: Clasificación de elementos espaciales según su geometría. ](IMG/Primitivas_vectoriales.png){width='100%'}
 
 
-Desde la antigüedad que el ser humano pretende diferenciar un lugar de otro, tal vez en función de las lenguas que se hablan, de los animales que la habitan, de su cobertura vegetacional, sus caracteristicas fisiográficas o sus variables climáticas. En este sentido, no han faltado quienes han pretendido desarrollar atlas de caracterización climática o vegetacional distingiendo zonas bien delimitadas seguen las variables involucradas en dichos procesos.
+Desde la antigüedad que el ser humano pretende diferenciar un lugar de otro, tal vez en función de las lenguas que se hablan, de los animales que la habitan, de su cobertura vegetacional, sus caracteristicas fisiográficas o sus variables climáticas. En este sentido, no han faltado quienes han pretendido desarrollar atlas de caracterización climática o vegetacional distinguiendo zonas bien delimitadas seguen las variables involucradas en dichos procesos.
 
 # El análisis de conglomerados
 
-Bajo esta misma lógica viene a colación el hablar del **análisis de conglomerados**,  **análisis de cluster** o **clustering**, el cual se trata de un método no paramétrico de cartacter exploratorio o descriptico, que detecta patrones de agrupación entre observaciones de acuerdo con sus similitudes y/o diferencias, buscando clasificar cualquier tipo de objetos según sus características.
+Bajo esta misma lógica viene a colación el hablar del **análisis de conglomerados**,  **análisis de cluster** o **clustering**, el cual se trata de un método no paramétrico de cartacter exploratorio o descriptivo, que detecta patrones de agrupación entre observaciones de acuerdo con sus similitudes y/o diferencias, buscando clasificar cualquier tipo de objetos según sus características.
 
 Los objetos a clasificar deben tener por lo menos características cualitativas o cuantitativas, las cuales permitirán su clasificación, la cual debe lograr maximizar la diferencia entre grupos y minimiza la diferencia intergrupo, es decir, una máxima homogeneidad o similitud entre los objetos agrupados y una gran diferencia entre los grupos, teniendo en cuanta siempre que este método no permite hacer inferencia estadística de una población con respecto a una muestra.
 
-Para llevar a cabo este procedimiento se deben seguir una serie de pasos consecutivos que permitan su correcto desarrollo. El primer paso consiste en consolidar una matriz o marco de datos de los objetos a clasificar con una cantidad y calidad adecuada de variables.Posterior a esto, es necesario construir una matriz de distancia o medidas de similitud con la cual comparar los disitntos registros de la base de datos para luego elegir un método adecuado de conglomeración y finalmente, validar el proceso de conglomerado
+Para llevar a cabo este procedimiento se deben seguir una serie de pasos consecutivos que permitan su correcto desarrollo. El primer paso consiste en consolidar una matriz o marco de datos de los objetos a clasificar con una cantidad y calidad adecuada de variables.Posterior a esto, es necesario construir una matriz de distancia o medidas de similitud con la cual comparar los distintos registros de la base de datos para luego elegir un método adecuado de conglomeración y finalmente, validar el proceso de conglomerado
 
 ## Construcción de marco de datos
-Cómo se comentó anteriormente la construcción del marco de datos es promordial para la realización del análisis de conglometados. Se requiere una base de datos que cuente con una estructura biend efinida, en la que las dstintas variables están dispuestas en columnas y los registros en filas, así mismo, para que el análisis se realice de una manera mucho más eficiente, es que se aconseja que la base de datos no posea más de 8 variables.
-
-https://djwillichile.github.io/EARN2/DATA/PPM_stat.csv
+Cómo se comentó anteriormente la construcción del marco de datos es primordial para la realización del análisis de conglomerados. Se requiere una base de datos que cuente con una estructura bien definida, en la que las distintas variables están dispuestas en columnas y los registros en filas, así mismo, para que el análisis se realice de una manera mucho más eficiente, es que se aconseja que la base de datos no posea más de 8 variables.
 
 ### Importación de datos puntuales
-Existe un gran número de formatos en que se puede importar datos, un ejemplo de estos es el ya conocido **csv** (*Comma Separated Values*), o el versátil **xlsx** de Excel, a continuación se importarón datos desde los formatos csv. Para estos ejemplos utilizaremos los materiales encontrados en el repositorio <https://github.com/djwillichile/EARN2/tree/main/DATA>, también pueden acceder a todo el material utilizado para esta actividad mediante el siguiente **[enlace](https://djwillichile.github.io/EARN2/DATA/PPM_stat.csv)**.
+Existe un gran número de formatos en que se puede importar datos, un ejemplo de estos es el ya conocido **csv** (*Comma Separated Values*), o el versátil **xlsx** de Excel, a continuación se importarán datos desde los formatos csv. Para estos ejemplos utilizaremos los materiales encontrados en el repositorio <https://github.com/djwillichile/EARN2/tree/main/DATA>, también pueden acceder a todo el material utilizado para esta actividad mediante el siguiente **[enlace](https://djwillichile.github.io/EARN2/DATA/PPM_stat.csv)**.
 
 ### Importar datos desde csv
 Este método es uno de los más sencillos de implementar y a la vez, el que permite más formas distintas de realizarlo. utilizaremos el archivo *PPM_stat.csv*
@@ -56,12 +54,12 @@ path <- "DATA"
 # Asignamos al objeto "file" el nombre del archivo que utilizaremos
 file <- "PPM_stat.csv"
 
-#ruta completa del archivo
-fileStrig <- paste0(path,"/",file)
-fileStrig
+# ruta completa del archivo
+fileString <- paste0(path,"/",file)
+fileString
 
 # Leemos el archivo mediante la función "read.csv"
-Prec <- read.csv(file = fileStrig)
+Prec <- read.csv(file = fileString)
 
 # Es posible observar una porcion de los datos cargados
 head(Prec)
@@ -74,11 +72,11 @@ Cabe destacar que es posible leer estos datos utilizando también la función `r
 
 ```{r}
 # Leemos el archivo mediante la función "read.table"
-Prec <- read.table(file = fileStrig,sep = ",",dec = ".",header = T)
+Prec <- read.table(file = fileString,sep = ",",dec = ".",header = T)
 head(Prec)
 
 # Leemos el archivo mediante la función "read.delim"
-Prec <- read.delim(file = fileStrig,sep = ",",dec = ".",header = T)
+Prec <- read.delim(file = fileString,sep = ",",dec = ".",header = T)
 head(Prec)
 ```
 
@@ -89,14 +87,14 @@ Así como importamos la base de datos a partir de un *csv* que contenía la info
 
 ```{r}
 # Asignamos al objeto "fileStrig" ruta completa del archivo
-fileStrig <- "DATA/PPM_stat.txt"
+fileString <- "DATA/PPM_stat.txt"
 
 # Leemos el archivo mediante la función "read.table"
-Prec <- read.table(file = fileStrig,sep = "\t",dec = ".",header = T)
+Prec <- read.table(file = fileString,sep = "\t",dec = ".",header = T)
 head(Prec)
 
 # Leemos el archivo mediante la función "read.delim"
-Prec <- read.delim(file = fileStrig,sep = "\t",dec = ".",header = T)
+Prec <- read.delim(file = fileString,sep = "\t",dec = ".",header = T)
 head(Prec)
 ```
 
